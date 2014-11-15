@@ -1,0 +1,77 @@
+Heapsort:
+1. "Heapify" the array
+O(N log N)
+
+2. While the heap has more than 1 item, remove that item (swapping it with the last item in the heap array) and trickle down the new root
+	The heapified array looks like it's sorted in near-descending order
+	Remove the biggest number from the heap (always at the front) and place it at the end of the sorted array
+	Reheapify the tree after each one
+O(N log N)
+
+=========================================
+
+BST				Hash Table
+set				unordered_set
+map				unordered_map
+
+=========================================
+
+Quicksort vs Mergesort vs Heapsort
+
+Quicksort: best constant of proportionality, worst case O(N^2)
+Mergesort: worst case O(N log N), requires...?
+
+=========================================
+
+Is student x in class y?
+
+C = number of classes
+E = average enrollment in a class
+
+map<string className, list<Student> blah> m;
+	O(log C+E)
+unordered_map<string, list<Student>>
+	O(E)
+map<string, set<Student>>
+	O(log C + log E)
+	O(log CE)
+unordered_map<<<string, unordered_set<Student>>
+	O(1+1)=O(1)
+
+=========================================
+
+graph
+node/vertex
+edge
+path
+cycle
+weighted graph
+depth-first traversal
+
+cyclic vs acyclic
+directed acyclic graph, or "dag"
+
+"waterfall"
+
+"spiral"
+	Tighten the spiral so errors can be caught earlier; originally dubbed "eXtreme programming," or XP; now "agile development"
+
+=========================================			
+
+"Software Lifecycle"
+
+Requirements Analysis
+Risk Analysis
+--------------------
+Analysis (what must be done)
+Design (how do we do it)
+Implementation
+Testing
+Deployment
+Maintenance
+
+=========================================
+
+
+
+---------------------------------------------------------------------------------------------------

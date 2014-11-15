@@ -1,0 +1,194 @@
+int main()
+{
+	circle c(-2, 5, 10);
+	double sf;
+	cin >> sf;
+	if(!c.scale(sf))
+		//report an error!
+	c.draw();
+	cout << area(c);
+}
+
+====================================================================
+
+class is a struct and a struct is a class (except class assumes private, struct assumes public)
+
+====================================================================
+
+#include <iostream>
+#include <cstdlib>	// std::exit
+#include <cmath>
+using namespace std;
+
+class Circle
+{
+public:
+	Circle(double x, double y, double r); //constructor is never const!
+	bool scale(double factor); //not const, since scale changes the Circle
+	void draw() const;
+	double radius() const;
+private:
+	double m_x;
+	double m_y;
+	double m_r;
+
+}; //DON'T FORGET THIS SEMICOLON <<
+
+double area(const Circle& a); //Or simply put the implementation inside the class itself (which is how Java works)
+
+Circle::Circle(double x, double y, double r)
+ : m_x(x), m_y(y), m_r(r)		//member initialization list; alternative style to initialize
+{
+	if(r<=0)
+	{
+		cout << "Radius must be positive!";
+		exit(1);
+	}
+}
+
+bool Circle::scale(double factor)
+{
+	if (factor<=0)
+	{
+		cout << "Factor is nonpositive. No scale will be done.";
+		return false;
+	}
+	m_r *= factor;
+	return true;
+}
+
+void Circle::draw() const
+{
+	//stuff to draw
+}
+
+double Circle::radius() const
+{
+	//return radius of circle
+}
+
+double area(cosnt Circle& a)
+{
+	const double PI = 4 * std::atan(1.0);
+	return PI * a.radius() * a.radius();
+}
+
+====================================================================
+
+"class invariant" - (restrictive) properties of the data members (i.e. m_r must always be greater than 0); check the constructor as well!
+
+====================================================================
+
+"source files"			"object files"
+picture.cpp	--compiler-->	picture.obj
+ui.cpp		--compiler-->	ui.obj
+db.cpp		--compiler-->	db.obj
+
+Linker will combine "libraries" and all the above object files into an "executable file," but does not run it
+
+====================================================================
+
+#include <iostream>
+#include <cstdlib>	// std::exit
+#include <cmath>
+using namespace std;
+
+//Circle.h		"header file"
+
+class Circle
+{
+public:
+	Circle(double x, double y, double r); //constructor is never const!
+	bool scale(double factor); //not const, since scale changes the Circle
+	void draw() const;
+	double radius() const;
+private:
+	double m_x;
+	double m_y;
+	double m_r;
+
+};
+
+double area(const Circle& a); //Or simply put the implementation inside the class itself (which is how Java works)
+
+====================================================================
+
+//picture.cpp
+
+#include "Circle.h"
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	circle c(-2, 5, 10);
+	double sf;
+	cin >> sf;
+	if(!c.scale(sf))
+		//report an error!
+	c.draw();
+	cout << area(c);
+}
+
+====================================================================
+
+//Circle.cpp
+
+#include "Circle.h"
+#include <cstdlib>
+#include <cmath>
+using namespace std;
+
+Circle::Circle(double x, double y, double r)
+ : m_x(x), m_y(y), m_r(r)
+{
+	if(r<=0)
+	{
+		cout << "Radius must be positive!";
+		exit(1);
+	}
+}
+
+bool Circle::scale(double factor)
+{
+	if (factor<=0)
+	{
+		cout << "Factor is nonpositive. No scale will be done.";
+		return false;
+	}
+	m_r *= factor;
+	return true;
+}
+
+void Circle::draw() const
+{
+	//stuff to draw
+}
+
+double Circle::radius() const
+{
+	//return radius of circle
+}
+
+double area(cosnt Circle& a)
+{
+	const double PI = 4 * std::atan(1.0);
+	return PI * a.radius() * a.radius();
+}
+
+====================================================================
+
+Blah.h
+
+class Blah
+{
+	...
+};
+Prototypes for non-member functions
+
+--------------------------------------------------------------------
+
+Blah.cpp		"implementation file"
+#include "Blah.h"
+
+implementations of member and non-member functions

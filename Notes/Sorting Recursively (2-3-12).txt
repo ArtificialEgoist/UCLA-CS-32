@@ -1,0 +1,26 @@
+sort(an unsorted pile of N items):
+	if(the pile has at least two items)
+	{
+		split the pile approximately evenly into two unsorted piles
+		sort(the left pile of about N/2 items)
+		sort(the right pile of about N/2 items)
+		merge the two sorted sub-piles into one sorted pile
+	}
+
+recursion
+
+recursive algorithm:
+-every call is a smaller problem
+
+-base case(s):		eventually reaches a small enough problem to be solved directly without recursion
+-recursive case(s):	otherwise, solve recursively on a smaller instance of the problem
+
+
+
+========================================
+
+
+---------------------------------------------------------------------------------------------------
+
+
+

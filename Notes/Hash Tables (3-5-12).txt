@@ -1,0 +1,220 @@
+Naive BST:
+-Average: O(log N)
+-WOrst: O(N)
+
+Better BST:
+-Average/Worst: O(log N)
+
+Hash Table: (no growth in number of buckets)
+-Average: O(N) //linear, but really low constant of proportionality; thus for fewer amounts, this is way faster than BST
+
+Hash Table: (grow in number of buckets)
+-Average/Wost: O(1) //averaged out
+
+=========================================
+
+Hash function: key->int (index into array)
+
+Functions:
+	-Insert
+	-Delete
+	-Lookup
+
+"Open hash table"
+
+864375209
+864382004
+
+"Collision" - two or more keys hash to the same index
+
+"Bucket"
+	-Value not always the first one; we have to go through the entire bucket (check for it!)
+	-Linked list is common as a bucket (singly-linked will work for our project)
+
+=========================================
+
+Adaptation of FNV-1a Hash Function
+
+unsigned int hash(string s)
+{
+	unsigned int h = 2166136261;
+	for(int k=0; k!=s.size(); k++)
+	{
+		h+=s[k];	//could use exclusive or: h^=s[k];
+		h*=16777619;
+	}
+	return h; //h is a HUGE number, but it's stuffed into the 32-bits; performs well-defined action every time
+			//everytime it's called with a key, the value is the same (important!)
+
+}
+
+---------------------------------------------------------------------------------------------------
+
+Rehashing - allocate more buckets and move old things into new buckets
+	-Good idea to do when ratio of (Items in Buckets)/(Number of Buckets) gets kind of high
+	-Rehashing will keep the order time constant
+
+Hash Functions must be...
+	-Deterministic (must always give the same key for a certain value; important for lookup)
+	-Cheap
+	-Uniformly distributed output
+
+An example of a hash function that fails uniformly distributed output: one that returns a key '1' for every value
+
+=========================================
+
+Hash Table - O(1) - if you grow the number of buckets when appropriate
+vs
+BST - O(log N)
+
+However...traversal for Hash Table is in no particular order. BST has traversal in a sorted order.
+If traversing over every item is important, choose BST (at a cost of inserting time, etc.)
+If we don't traverse OR don't care about the order, choose Hash Table.
+
+Both Hash Tables and BSTs both have O(N log N) for inserting an item, then grabbing all the items in sorted order
+
+=========================================
+
+Unordered: set, multiset, map, multimap
+
+unordered_map<string, double> ious;
+string name;
+double amt;
+while(cin>>name>>amt)
+	ious[name]+=amt;
+
+unordered_map<string, double>::iterator p;
+for(p=ious.begin(), p!=ious.end(); p++)
+	cout << p->first << " owes me $" << p->second << endl;
+
+---------------------------------------------------------------------------------------------------
+
+Non-standards...DON'T USE THESE BELOW:
+VC++
+	stdext::hash_map
+g++
+	???::hash_map
+
+=========================================
+
+TR1 (2005):
+VC++
+	<unordered_map>
+	std::tr1::unordered_map
+g++
+	<tr1/unordered_map>
+	std::tr1::unordered_map
+
+=========================================
+
+C++11:
+VC++
+	<unordered_map>
+	std::unordered_map
+g++
+	<unordered_map>
+	std::unordered_map
+	g++ -std=c++0x
+
+=========================================
+
+FOR PROJECT 4: CAN'T USE map, unordered_map, or hash_map
+	Can use MyHashMap, write own map?
+
+---------------------------------------------------------------------------------------------------
+
+"Starvation" - starving to death waiting (i.e. waiting for a 1000-page dissertation to print when shorter papers with priority keep coming in)
+	Change priority scheme to also account for aging, not simply based on shorter jobs
+
+"Priority Queue"
+	Insert an item (easy; just add to the end)
+	Remove the item of highest priority
+
+Unsorted Sequence
+	x x x x x
+	Insert has O(1)
+	Remove has O(N)
+Sorted Sequence
+	x x x x x x
+	Insert has O(N)
+	Remove has O(1)
+
+=========================================
+
+In a BST, item of highest priority is the largest one, the item farthest to the right. 
+Removing the prioritized item is not too bad; there's no right child, and if there's a left child, it will take its place.
+
+BST
+	insert O(log N)
+	remove O(log N)
+
+If the BST tree is not balanced, we'll lose our O(log N) behavior. Must rebalance!
+
+=========================================
+
+Complete Binary Tree - binary tree where every level is full except possibly the lowest level
+Exactly one possible structure for each number of total nodes!
+[]			[]			[]			[]
+			/			/\			/\
+		       []		       [] []		       [] []		etc...
+								       /
+								      []
+
+=========================================
+
+Heap - a complete binary tree where the value at each node is >= the values in that node's descendants
+	Max heap (or simply "heap") >=
+	Min heap <=
+
+Heap/Max heap example: (every leaf node is a heap, as well as the interior nodes) (no particular order for left/right subtrees)
+		 90
+	        / \
+	      60   80
+              /\   /\
+	    40 50 70 20
+	    /\
+	   10 30
+Item of highest priority is ALWAYS on top (largest item). Remove the item of highest priority...but what takes its place? Re-heapify!
+After removing the 90, we have to take away the 30's spot. 
+
+Algorithm for removing/reheaping:
+	-Replace the highest priority item with the item from the bottom-right-most node (replace 90 with 30)
+		 30
+	        / \
+	      60   80
+              /\   /\
+	    40 50 70 20
+	    /
+	   10
+	-Is 30>60 and 30>80? (If so, we're done.) Since it's not, swap it with the biggest child. 
+		 80
+	        / \
+	      60   30
+              /\   /\
+	    40 50 70 20
+	    /
+	   10
+	-Check for the new spot of that same object (30). Repeat and swap (70 with 30)
+		 80
+	        / \
+	      60   70
+              /\   /\
+	    40 50 30 20
+	    /
+	   10
+	-We're done!
+
+Remove (Smallberg's definition): Has O(log N)
+	-the root is the one to be removed
+	-promote the bottom-rightmost node to root (i.e., fix the complete binary tree property)
+	-trickle the value down
+
+Insert (Smallberg's definition): Has O(log N)
+	-add the node so as to make a complete binary tree (add it to the bottom-left)
+	-bubble the value up (compare that node to its parent; if it's bigger/higher priority, swap them; repeat for the parents)
+
+Parent(i) in a complete binary tree = (i-1)/2
+Child(j) in a complete binary tree = 2j+1 and 2j+2
+
+=========================================
+

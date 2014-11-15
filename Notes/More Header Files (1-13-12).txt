@@ -1,0 +1,168 @@
+Student.h
+=========
+#include "Course.h"
+
+class Student
+{
+	...
+	course* m_courses[10];
+};
+
+
+Course.h
+=========
+#include "Student.h"
+
+class Course
+{
+	...
+	Student* m_roster[500];
+};
+
+We have an infinite loop above due to circular #includes, causing a compiler error in C++
+
+---------------------------------------------------------------------------------------------------
+
+Student.h
+=========
+class Course;
+
+class Student
+{
+	...
+	std::string m_name;
+	course* m_courses[10];
+};
+
+Student.cpp
+=========
+#include "Student.h"
+#include "Course.h"
+
+void Student::enroll(Course& c)
+{	
+	c.units()
+}
+
+
+Course.h
+=========
+class Student;
+
+class Course
+{
+	...
+	Student* m_roster[500];
+};
+
+In general, do not include header files that are not completely necessary (sometimes a class declaration will suffice)
+
+---------------------------------------------------------------------------------------------------
+
+class Circle { ... Circle(double x, double y, double r); ...};
+
+class StickFigure
+{
+public:
+	StickFigure(double bl, double, headDiameter, string nm, double hx, double hy);
+private:
+	String m_name;
+	Circle m_head;
+	double m_bodyLength;
+};
+
+StickFigure(double bl, double, headDiameter, string nm, double hx, double hy)
+ : m_name(nm), m_head(hx, hy, headDiameter/2), m_bodyLength(bl)
+{}
+
+1. TBD
+2. Cosntruct the data members
+3. Execute the body of the constructor
+
+---------------------------------------------------------------------------------------------------
+
+void h()
+{
+	String s("Hello");
+}
+
+int main()
+{
+	String t;
+	for()
+	{
+		h();
+	}
+}
+
+==============================
+
+class String
+{
+public:
+	//String(const char value[]);
+	String(const char* value);
+	String();
+private:
+	char* m_text; //dynamically allocated C string	//when m_len=0, this is either a NULL or a pointer to a zero-byte (tradeoff)
+	int m_len;
+
+};
+
+String::String(const char* value)
+{
+	m_len = strlen(value);
+	//m_text = value;
+	m_text = new char[m_len+1];
+	strcpy(m_text, value);
+}
+
+int main()
+{
+	char buffer[1000];
+	cin.getline(buffer, 1000);	//user types Hello
+	String s(buffer);
+	cin.getline(buffer, 1000);	//user types Wow
+	//what is the text in s?
+
+}
+
+
+
+
+'\0'	zero byte
+
+Class invariant:
+m_text is a non-NULL pointer to a DYNAMICALLY ALLOCATED array of m_len+1 characters (when pointing to a zero-byte)
+m_len >= 0
+m_len == strlen(m_text)
+---------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

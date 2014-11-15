@@ -1,0 +1,52 @@
+Point.h
+-------
+//Everything other than commments should be within the include guards - not even other includes!
+
+#ifndef POINT_INCLUDED		"include guards"
+#define POINT_INCLUDED
+
+class Point
+{
+	...
+};
+
+#endif	//POINT_INCLUDED 
+
+
+
+Circle.h
+--------
+#ifndef CIRCLE_INCLUDED
+#define CIRCLE_INCLUDED
+
+#include "Point.h"
+#include <string>
+
+class Circle
+{
+	...
+	Point m_center; //requires Point.h to be included
+	double m_radius;
+	std::string m_label;
+	...
+};
+
+#endif	//CIRCLE_INCLUDED
+
+
+picture.cpp
+-----------
+#include "Circle.h"
+#include "Point.h"	//bad way to fix Circle.h's need for Point.h
+			//compilation error to include (in a single file) the same class twice (i.e., including Point.h in both Circle.h and picture.cpp)
+#include <string>	//standard headers already have include guards
+
+int main()
+{
+	Circle c(-2, 5, 10);
+	//Point p(2, -4);
+	std::string s("Hello");
+	...
+}
+
+====================================================================

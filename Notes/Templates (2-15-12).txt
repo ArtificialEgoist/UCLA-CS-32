@@ -1,0 +1,127 @@
+int minimum(int a, int b)
+{
+	if(a<b)
+		return a;
+	else
+		return b;
+}
+
+double minimum(double a, double b)
+{
+	if(a<b)
+		return a;
+	else
+		return b;
+}
+
+//Body is textually identical!
+
+=========================================
+
+template<typename T>
+
+T minimum(T a, T b)
+{
+	if(a<b)
+		return a;
+	else
+		return b;
+}
+
+//When a method of a template is called, it will take the path of "template argument deduction"
+	//Decides what type the arguments are
+	//Manufactures a NEW instance of the template, where T is now the new class name (i.e., int), and uses that
+	//Calling minimum with an int and a double would cause an error; templates always require types to be the same (no int convertions, etc.)
+
+char ca1[100];
+char ca2[100];
+
+cin.getline(ca1, 100);
+cin.getline(ca2, 100);
+
+char* ca3 = minimum(ca1, ca2); //compares the POINTERS themselves, not the actual c string (not good!)
+
+char* minimum(char* a, char* b)
+{
+	if(strcmp(a, b)<0)
+		return a;
+	else
+		return b;
+}
+
+//Special-case functions can be written, and they will override the template function (like above)
+
+=========================================
+
+Chicken c1, c2;
+Chicken c3 = minimum(c1, c2); //probably won't compile, since we don't know how a chicken is less than another (that's a good thing!)
+
+//What about something that costs a lot to copy? Pass by reference.
+
+=========================================
+
+tempalte<typename T>
+T sum(const T a[], int n)
+{
+			//T total=0; //works for ints and doubles
+			//T total = ""; //works for strings
+			//How do we initialize this variable to a value appropriate to its type
+
+	for(int k=0; k<n; k++)
+		total += a[k];
+	return total;
+}
+
+=========================================
+
+template<typename T>
+class Stack
+{
+public:
+	Stack();
+	void push(const T& x); //just in case it's expensive to copy
+	void pop();
+	T top() const;
+	int size() const;
+private:
+	T m_data[100];
+	int m_top;
+};
+
+template<typename T>
+Stack<T>::Stack()
+ : m_top(0)
+{}
+
+template<typename T>
+void Stack<T>::push(const T& x)
+{
+	m_data[m_top]=x; //undefined if full
+	m_top++;
+}
+
+template<typename T>
+//and so on...declare template above each function that uses it
+
+---------------------------------------------------------------------------------------------------
+
+template<typename T>
+class vector
+{
+	push_back(const T& x);
+	...
+}
+
+vector<int> vi;
+
+vi[3] = 50; //undefined behavior
+vi.at(3) = 50; //throws exception (better choice)
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------

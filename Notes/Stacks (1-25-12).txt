@@ -1,0 +1,156 @@
+Often times, all the activity is done at the end (i.e. Tic-Tac-Toe example for determining outcomes by backtracking player moves)
+
+---------------------------------------------------------------------------------------------------
+
+LIFO - Last In First Out; most commonly used in the data structure "stack"
+
+	-Create an empty stack
+	-Push an item onto the stack (add a last item)
+	-Pop an item from the stack (remove last item) (Stack can't be empty)
+	-Look at the top item in the stack (Stack can't be empty)
+	-Is the stack empty?
+
+	-Can only look at one item in the stack
+	-Looking at or popping an item in an empty stack?
+	-How many items are in the stack? (sometimes this is provided)
+
+========================================
+
+#include <stack>
+using namespace std;
+
+stack<int> s; //std::stack<int> s;
+s.push(10);
+s.push(20);
+
+int n = s.top(); //returns top item of the stack
+		//calling top() on an empty stack is UNDEFINED BEHAVIOR
+
+s.pop();	//some languages do NOT return the value on a pop(); it is sometimes just a void
+
+if(!s.empty())
+	cout << s.size();	//not always implemented
+
+------
+| 10 |
+------
+
+========================================
+
+f(a, b, c);
+add(sub(8, div(6, 2)), 1);
+
+
+Prefix Order
++ - 8 / 6 2 1
+
+Infix Order
+8 - 6 / 2 + 1
+
+Postfix Order
+8 6 2 / - 1 +
+
+
+Ambiguity: 6-1*2 = 4? 10?
+No such problem in prefix notation: * - 6 1 2   OR   - 6 * 1 2, no parenthesis needed
+Computer uses postfix order
+
+
+Polish notation (postfix?)
+Hungarian convention - principle of using m_ before private variables (i.e., m_position, etc.)
+
+========================================
+
+Operand Stack
+8 6 2 / - 1 +
+
+(From the front, when you come to an operand, push it onto the stack)
+(When you come to an operator, pop the top two off of the stack, apply the operator, then push the result back)
+
+Simple Algorithm:
+
+2
+6
+8
+
+
+3->from 6/2
+8
+
+
+5->from 8-3
+
+
+1
+5
+
+
+6->from 5+1
+
+========================================
+
+Infix -> Postfix
+
+8 - 6 / 2 + 1
+
+Operator Stack:
+				8
+-				8
+-				8 6
+- /				8 6 		//since divide has higher precedence than subtract, push onto stack
+- /				8 6 2
+-				8 6 2 /
+				8 6 2 / - 	//+ does not have strictly greater precedence than -; they have the same
++				8 6 2 / -
++				8 6 2 / - 1
+				8 6 2 / - 1 +
+				
+
+
+If precedence of current operator is strictly greater than precedence of the top of stack, then push it.
+Else, pop the top onto the output sequence and check again
+
+At the very end, pop all items from operator stack to add to the end
+
+========================================
+
+What about with parenthesis?
+
+(8-6)/((2+1)*3)
+
+Operator Stack:
+( -				8 6
+
+Push the parenthesis just like operators, but when a close-parenthesis is pushed in, pop all operators out until the corresponding open-parenthesis is popped.
+The operator in between is placed at the end of the operands. (Open parenthesis are always pushed and considered lower precedence than other operators.)
+
+
+---------------------------------------------------------------------------------------------------
+
+FIFO - First In First Out; "queue" (Last In Last Out) with head/tail or front/back
+
+QUEUE QUEUE :'(
+
+	-Create an empty queue
+	-Enqueue an item onto the queue
+	-Dequeue an item from the queue (Queue can't be empty)
+	-Look at the front/head of the queue (Queue can't be empty)
+	-Is the queue empty?
+
+	-Look at any item in the queue
+	-How many items are in the queue?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,345 @@
+class Circle
+{
+	void move(double xnew, double ynew);
+	void draw() const;
+	double m_x;
+	double m_y;
+	double m_r;
+};
+
+class Rectangle
+{
+	void move(double xnew, double ynew);
+	void draw() const;
+	double m_x;
+	double m_y;
+	double m_dx;
+	double m_dy;
+};
+
+pic is an array of Circle/Rectangle with 100 elements
+
+Circle picC[100];
+int nc;
+Rectangle picR[100];
+int nr;
+
+for(int k=0; k<nc; k++)
+	picC[k].draw();
+for(int k=0; k<nr; k++)
+	picR[k].draw();
+for...
+
+
+void f(Circle& c)
+{
+	c.move(10, 20);
+	c.draw();
+}
+
+void f(Rectangle& r)
+{
+	r.move(10, 20);
+	r.draw();
+}
+
+//Overloading these functions is a bad idea, since when we add new shapes in the future, we might forget to write their own shapes
+
+---------------------------------------------------------------------------------------------------
+
+class Shape
+{
+public:
+	virtual void move(double xnew, double ynew); //doesn't need to be virtual if all shapes will call this exact function on move()
+	//virtual void draw() const;
+	virtual void draw() const = 0; //pure virtual
+private:
+	double m_x;
+	double m_y;
+};
+
+void Shape::move(double xnew, double ynew) //Circle inherits move from shape (since Circle doesn't declare its own move(), it uses Shape's)
+{
+	m_x = xnew;
+	m_y = ynew;
+}
+
+void Shape::draw() const
+{
+	...draw a cloud centered at (m_x, m_y)...
+}
+
+class Circle : public Shape //a Circle is-a shape
+{
+	double m_r;
+};
+
+void Circle::draw() const
+{
+	...draw a circle with radius m_r centered at (m_x, m_y)...
+}
+
+class Rectangle : public Shape
+{
+	double m_dx;
+	double m_dy;
+};
+
+//class Circle : public Shape
+//Shape is a [generalization/super class/base class] while Circle is a [specialization/subclass/derived class]
+//Every derived class has imbedded in it (in the memory) a base class (i.e., Circle has m_r AND m_x, m_y from Shape)
+
+void f(Shape& s)
+{
+	s.move(10, 20);
+	s.draw();	//compiler will have to settle with Shape's draw function here;	the compiler is deciding at compile time which funtion to call
+			//"static binding" is at compile-time (WRONG! But unfortunately a default in C++)
+
+			//"dynamic binding" is at runtime ("virtual"); decides which function to execute (can call Circle's draw)
+			//virtual only has to be declared once in the base class, but it can (probably should) be repeated as a reminder
+	
+}
+
+int main()
+{
+	Circle c;
+	f(c);
+}
+
+Derived& ==> Base&
+Derived* ==> Base*
+Derived ==> Base ("Slicing"...BAD IDEA!!! Don't take only the variables common to both Circle and Shape and draw based on those)
+
+Shape* pic[100]; //sometimes called a "heterogenous collection" (all have a common base type)
+int n;
+
+for(int k-0; k<nc; k++)
+	pic[k]->draw();
+
+pic[0] = new Circle;
+pic[1] = new Circle;
+pic[2] = new Rectangle;
+
+
+
+Circle c;
+c.move(10, 20); //uses Shape's move()
+c.draw();	//uses its own draw()
+
+---------------------------------------------------------------------------------------------------
+
+base class: shape
+derived class: circle, rectangle, triangle
+
+-Derived classes "inherit" the abilities of the base class
+
+class Person
+{
+public:
+	int age() const;
+private:
+	int m_age;
+};
+
+class Student: public Person
+{
+public:
+	void stayUpLateStudying();
+	//no mention of age function
+private:
+};
+
+void Student::stayUpLateStudying()
+{
+	if(m_age>25) //won't compile, only a PERSON can talk about m_age
+		//...
+	if(age()>25) //works!
+		//...
+}
+
+
+Student s;
+cout << s.age(); //works!
+cout << s.m_age; //won't compile
+
+========================================
+
+"Polymorphism"
+
+Derived classes can call functions differently than does the base class
+
+class Circle : public Shape
+{
+	virtual void draw() const;
+	double m_r;
+};
+
+class Rectangle : public Shape
+{
+	virtual void draw() const;
+	virtual double diag() const; //Rectangle can implement its own functions that don't apply to other shapes
+	double m_dx;
+	double m_dy;
+};
+
+========================================
+
+Shape's "virtual table" (functions are randomly assigned indices)
+0: [	move()	]-----> Shape::move
+1: [	draw()	]-----> Shape::draw
+
+Rectangle's vtbl (Virtual Table) (virtual functions are assigned SAME indices as the base class; new functions are randomly assigned)
+0: [	move()	]-----> Shape::move
+1: [	draw()	]-----> Rectangle::draw
+2: [	diag()	]-----> Rectangle::diag
+
+Shape* sp; //sp can point to the Shape part of a Rectangle
+Rectangle r;
+sp=r;
+//OR sp = new Rectangle; //the compiler knows that it is a Rectangle
+
+sp->draw();	//always generates code to call function pointed to by slot 1 in the vtbl
+//Every Shape object holds a virtual pointer (let's call it vptr) that points to the appropriate vtbl
+//Call the function that sp->vtpr[1] points to (calls Rectangle's draw function)
+
+---------------------------------------------------------------------------------------------------
+
+-If move() isn't declared as virtual, it won't be added to the virtual table (will always call Shape's move())
+	-Might be a bad idea...what if a derived class EVER moves in a different way?
+	-I.E. a "warning symbol" derived from Shape that moves and flashes three times (on each move)
+
+class WarningSymbol : public Shape
+{
+	public:
+	...
+	void move(double xnew, double ynew);
+	...
+};
+
+void WarningSymbol::move(double xnew, double ynew)
+{
+	//move(xnew, ynew); //bad idea; recursion!
+
+	Shape::move(xnew, ynew); //SAME AS: this->Shape::move(xnew, ynew);
+	...flash 3 times...
+}
+
+========================================
+
+warningSymbol ws;
+ws.move(10, 20);	//calls warningSymbol::move because the object is called on a wS (and that is determined on compile time)
+
+f(ws);	//calls Shape's move since move isn't virtual; compiler only knows that what's passed into f is a Shape s
+	//why would we override virtual functions (make functions non-virtual)? It should always be virtual.
+
+
+
+1. Construct the base part
+2. Construct the data members
+3. Execute the body of the constructor
+=========================================
+1. Execute the body of the destructor
+2. Destroy the data members
+3. Destroy the base part
+
+
+class Shape
+{
+public:
+	Shape(double x, double y); //compiler won't create a default constructor for us since we already made our own constructor (even though it's not default)
+	Shape();
+	virtual ~Shape(); //can't make this pure virtual due to linker error; but virtual ~Shape() {} works
+	virtual void move(double xnew, double ynew); //doesn't need to be virtual if all shapes will call this exact function on move()
+	virtual void draw() const = 0; //pure virtual
+private:
+	double m_x;
+	double m_y;
+};
+
+
+class Polygon : public Shape
+{
+public:
+	~Polygon();	//frees up the linked list
+private:
+	struct Node
+	{...};
+	Node* head;
+};
+
+	//assume this is inside some scope
+	{
+		Polygon p(...);
+		...
+	}
+
+	Shape* sp = new Polygon(...);
+	...
+	delete sp; //wrong; program decides at compile time which destructor to call, so it calls Shape's destructor
+			//memory leak! doesn't call Polygon's destructor to free up the nodes
+			//solution: make Shape's destructor virtual
+	//A CLASS DESIGNED TO BE A BASE CLASS SHOULD DECLARE A VIRTUAL DESTRUCTOR.
+
+
+
+Shape::Shape(double x, double y)
+ : m_x(x), m_y(y)
+{}
+
+Shape::Shape()
+ : m_x(0), m_y(0)
+{}
+
+Shape::~Shape()
+{} //seems kind of useless, but we need to specify Shape's destructor ourself. if the compiler writes it for us, it won't be virtual!
+
+
+=========================================
+
+class Circle : public Shape
+{
+public:
+	Circle(double r, double x, double y);
+	Circle(double r);
+private:
+	double m_r;
+};
+
+Circle::Circle(double r, double x, double y)
+ : Shape(x, y), m_r(r) //order here doesn't matter (if we left out Shape(x, y) without having a default constructor, we'd have an error)
+{}
+
+Circle::Circle(double r)
+ : m_r(r)
+{}
+
+=========================================
+
+Circle c(10, -2, 5);
+
+c:	Shape:	m_x:	-2
+		m_y:	-5
+	m_r:		10
+
+---------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

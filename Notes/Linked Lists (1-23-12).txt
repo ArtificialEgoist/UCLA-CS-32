@@ -1,0 +1,64 @@
+if (size>=capacity)
+{
+	//no room, so grow
+			//capacity += ~~~; //1? 10? 1000? 1000000?
+	capacity *= 2; //double the capacity each time it grows; speeds up big-O from n^2 to n!
+
+	int* q = new int[capacity];
+	for(int k=0; k<size; k++)
+		q[k]=p[k];
+	delete [] p;
+	p=q;
+	p[size]=~~~;
+	size++;
+}
+
+"dynamically resizable array"
+
+int a[1000];
+int* p;
+
+---------------------------------------------------------------------------------------------------
+
+"linked list"
+"linear linked list"
+
+"head" -> "list node" -> "list node" -> NULL
+
+========================================
+
+struct Node
+{
+	int m_data;
+	Node* m_next;
+};
+
+Node* head;
+
+========================================
+
+0-item Linked List:
+	Head: NULL
+
+1-item Linked List:
+	Head -> "list node" -> NULL
+
+for(Node* p=head; p!=NUL; p=p->m_next)
+	cout << p->m_data << endl;
+
+========================================
+
+Node* p;
+for(p=head; p!=NULL && p->m_data!=42; p=p->m_next)
+	;
+f(p!=NULL)
+Node* newGuy = new Node;
+newGuy->m_data = 63;
+newGuy->m_next = p->m_next;
+p->m_next = newGuy;
+
+========================================
+
+
+
+

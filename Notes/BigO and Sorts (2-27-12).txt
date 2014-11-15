@@ -1,0 +1,176 @@
+1. Data is most commonly ALREADY SORTED.
+2. Next comes data SORTED DESCENDINGLY.
+
+=========================================
+
+Selection Sort:
+	For each iteration, swap the lowest object with the first one
+	O(N^2) comparisons
+	O(N) data movements
+
+=========================================
+
+Bubble Sort:
+	Worst case (N^2)
+	Average case (N^2)
+53761824
+35617248
+35162478
+31524678
+13245678
+12345678
+12345678
+
+=========================================
+
+Insertion Sort:
+	Average case O(N^2)
+	Best case O(N) [sorted ascendingly or "almost sorted"]
+	Worst case O(N^2) [sorted descendingly]
+
+=========================================
+
+Shell Sort:
+	Insertion sort in chunks
+	Average is something like O(N^1.5)
+35761824
+13245876
+13245678
+12345678
+
+=========================================
+
+Merge Sort:
+	Average case O(NlogN)
+	Worst case O(NlogN)
+		if(N>1)
+		{
+			split into 2 piles
+			sort left pile, which takes T(N/2) time
+			sort right pile, which takes T(N/2) time
+			merge them, which takes O(N)
+		}
+
+=========================================
+
+Quick Sort: (developed by Tony Hoare)
+	Average case O(NlogN)
+	Worst case O(N^2) //happens when the pivot chosen is always the worst
+53761824
+	Pick a pivot element (the front element)
+5|3421867==>13425867 (swap the pivot [which is in the right spot] with the small element farthest to the right)
+	... Partitioning takes O(N)
+	There are other partitioning options
+	Similar to merge sort, but the order of steps is different (can be more efficient...sometimes)
+		if(N>1)
+		{
+			partition around pivot
+			sort left portion
+			sort right portion
+		}
+	"Median of three" - choosing the median of the first, middle, and last element to be the pivot
+		Reduces the number of worse cases
+
+---------------------------------------------------------------------------------------------------
+
+A tree has a unique path:
+	Between any pair of nodes
+	Between the root and any other node
+
+Parent vs. Child
+Leaf node vs. Non-leaf/Interior node
+
+int countNodes(const Node* p)
+{
+	if(p==NULL)
+		return 0;
+	int total = 1;
+	for(int k=0; k<p->child.size(); k++)
+		total+=countNodes(p->child[k]);
+	return total;
+}
+
+void printTree(const Node* p)
+{
+	if(p!=NULL)
+	{
+		cout << p->data << endl;
+		for(int k=0; i<p->child.size(); k++)
+		{
+			printTree(p->child[k]);
+		}
+	}
+		
+}
+
+void printTreeAuxiliary(const Node *p, int depth)
+{
+	if(p!=NULL)
+	{
+		cout << p->data << endl;
+		for(int k=0; k<p->child.size(); k++)
+			printTreeAuxiliary(p->child[k], depth+1);
+	}
+}
+
+=========================================		After redoing these functions...
+
+void printTree(const Node* p) //for client use
+{
+	if(p!=NULL)
+		printTreeAuxiliary(p, 0);
+		
+}
+
+void printTreeAuxiliary(const Node *p, int depth) //NOT for client use, since we are assuming p!=NULL
+{
+	cout << string(2*depth, ' ') << p->data << endl;
+	for(int k=0; k<p->child.size(); k++)
+		printTreeAuxiliary(p->child[k], depth+1);
+}
+
+
+=========================================
+
+Depth-first traversal
+	Uses a stack
+
+Breadth-first/level-order traversal
+	Uses a queue
+
+Post-order traversal
+	Process node, then subtrees
+
+Pre-order traversal
+	Process subtrees, then node
+
+=========================================
+
+A binary tree is either empty or has a node, a left subtree, and a right subtree
+
+A binary search tree (BST) is a binary tree where...
+	The left subtree is a BST whose nodes have values <= the value at the root
+	And the right subtree is a BST whose nodes have values >= the value at the root
+
+---------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

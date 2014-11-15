@@ -1,0 +1,241 @@
+class Circle
+{
+public:
+	Circle(.....);
+privare:
+	double m_x;
+	double m_y;
+	double m_r;
+};
+
+class StickFigure
+{
+public:
+	StickFigure(.....);
+private:
+	Circle m_head;
+	double m_bodyLength;
+	string m_name;
+};
+
+====================================================
+
+x:
+m_head: 	m_x:	-2
+		m_y:	5
+		m_r:	10
+m_bodyLength:		15
+m_name:		"Fred"
+
+====================================================
+s:
+m_head: 	m_x:	-2	//calls the Circle's copy constructor
+		m_y:	5
+		m_r:	10
+m_bodyLength:		15
+m_name:		"Fred"	//library-type string will copy correctly
+			//Thus we don't have to code copy constructors here. The compiler's are correct in this case.
+
+====================================================
+
+void f(StickFigure& t)
+{
+	StickFigure s(.....);
+	...
+	t=s; //library strings will copy the values correctly; our string class on the other hand...
+	...
+}
+
+====================================================
+
+Upon creation:
+1. -----
+2. Construct the data members
+3. Execute the body of the constructor
+
+Upon closing:
+1. Execute the body of the destructor
+2. Destroy the data members
+3. -----
+
+====================================================
+
+class String
+{
+public:
+	String(const char* value);
+	~String(); { delete [] m_text; }
+		//destructor is needed to remove the dynamically-allocated memory (which pointer m_text points to)
+	String(const String& other);
+private:
+	char* m_text;
+	int m_len;
+};
+
+String::String(const String& other)
+{
+	m_len = other.m_len;
+	m_text = new char [m_len+1];
+	strcpy(m_text, other.m_text);
+}
+
+String& String::operator=(const String& rhs)
+{
+	if(this!=&rhs)
+	{
+		String temp(rhs);
+		swap(temp);
+	}
+	return *this;
+
+	delete [] m_text; //get rid of the old allocated memory; we have a hanging pointer, but it's going to point to new memory soon
+			//just calling destrutor on the left-hand side won't compile, ~String();
+			//calling String(rhs), the copy constructor, will compile, but will do the wrong thing
+	m_len = rhs.m_len;
+	m_text = new char[m_len+1];
+	srcpy(m_text, rhs.m_text);
+
+	return *this;
+}
+
+====================================================
+Incorrect:
+
+x:
+m_text:	+---------------> 
+m_len:	5		  ^	
+			  |
+s:			  |
+m_text:	+------------------ //copies the pointer to the SAME array (doesn't create its own text array m_text)
+m_len: 	5
+
+====================================================
+Correct (after creating our own copy constructor):
+
+x:
+m_text:	+---------------> H e l l o \0 //turns into garbage after s goes away
+m_len:	5
+
+s:
+m_text:	+---------------> W o w \0
+m_len: 	5
+
+====================================================
+
+void f(String& t)
+{
+	String s("Wow");
+	...
+	t = s;	//means t.operator=(s);
+	...
+};
+
+====================================================
+
+int k = 3;
+int n;
+void h(int m);
+
+n = (k = 7);
+n = k = 7;
+h(k = 4);
+
+====================================================
+
+String k = "Hello";
+String n;
+void h(String m);
+
+n = (k = "Wow");
+n = k = "Wow";
+h(k=n);
+
+====================================================
+
+String h(.....);
+
+void g()
+{
+	String x("Hello");
+
+	String y(x); //ways to call the copy constructor
+	String z = x; //ways to call the copy constructor
+
+	f(x);	//When we leave f(), local variables go away. So when s goes away, it removes the m_text that x points to as well
+
+	String w(h(...));
+
+/*
+	StickFigure x(...);
+	f(x);	//Creating a StickFigure from an already-existing StickFigure; this constructor is called a "Copy Constructor"
+		//If none is written, the compiler writes one for you
+	...
+*/
+}
+
+---------------------------------------------------------------------------------------------------
+
+void fun(String& a, String& b)
+{
+	...
+	a = b;
+	...
+}
+
+f(s, t);
+f(s, s); //often will not (or should not) work if the objects are the same
+
+arr[i] = arr[j];
+
+====================================================
+
+"aliasing"
+
+void transfer(Account& from, Account& to, double amt)
+{
+	//only execute this code if from/to Accounts are different objects
+	
+	if(&from != &to) //check for their memory locations to see if same object!
+	{
+		from.debit(amt);
+		to.credit(amt);
+		if(amt >= 10000)
+			fileForm();
+	}
+}
+
+====================================================
+
+"copy and swap"
+
+void swap(String& other)
+{
+	//swap the m_text pointers
+	//swap the m_len integers
+	
+	
+	
+}
+
+---------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
